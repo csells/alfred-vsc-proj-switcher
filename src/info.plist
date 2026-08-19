@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.sellsbrothers.proj</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>6F1B2A3C-8D4E-4F5A-9B6C-7D8E9F0A1B2C</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>B2C3D4E5-F6A7-4B8C-9D0E-1F2A3B4C5D6E</string>
+				<key>modifiers</key>
+				<integer>1048576</integer>
+				<key>modifiersubtext</key>
+				<string>Force new window</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+			<dict>
+				<key>destinationuid</key>
+				<string>C3D4E5F6-A7B8-4C9D-0E1F-2A3B4C5D6E7F</string>
+				<key>modifiers</key>
+				<integer>524288</integer>
+				<key>modifiersubtext</key>
+				<string>Reveal in Finder</string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>Chris Sells</string>
+	<key>description</key>
+	<string>Open-or-focus VS Code projects from ~/Code leaf folders</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>VS Code Project Switcher</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<true/>
+				<key>alfredfiltersresultsmatchmode</key>
+				<integer>1</integer>
+				<key>argumenttreatemptyqueryasnil</key>
+				<true/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>proj</string>
+				<key>queuedelaycustom</key>
+				<integer>3</integer>
+				<key>queuedelayimmediatelyinitially</key>
+				<true/>
+				<key>queuedelaymode</key>
+				<integer>0</integer>
+				<key>queuemode</key>
+				<integer>1</integer>
+				<key>runningsubtext</key>
+				<string>Scanning projects…</string>
+				<key>script</key>
+				<string></string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string>scripts/list_projects.py</string>
+				<key>subtext</key>
+				<string>Open a project in VS Code — focuses the window if already open</string>
+				<key>title</key>
+				<string>Open Project</string>
+				<key>type</key>
+				<integer>8</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>6F1B2A3C-8D4E-4F5A-9B6C-7D8E9F0A1B2C</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>./scripts/open_project.sh "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>./scripts/open_project.sh "$1" new-window</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>B2C3D4E5-F6A7-4B8C-9D0E-1F2A3B4C5D6E</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>68</integer>
+				<key>script</key>
+				<string>open -R "$1"</string>
+				<key>scriptargtype</key>
+				<integer>1</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>C3D4E5F6-A7B8-4C9D-0E1F-2A3B4C5D6E7F</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string># VS Code Project Switcher
+
+Type `proj` and a few characters of a project name; press Return to open that
+project in VS Code. If the project is already open, its existing window is
+focused instead (VS Code never opens the same folder twice).
+
+- ⏎ — open or focus the project
+- ⌘⏎ — force a new window
+- ⌥⏎ — reveal the folder in Finder
+- ⇥ — autocomplete the selected project name
+
+Projects are the depth-2 folders under the Projects Root (org/project, e.g.
+`~/Code/gascity/gas-city-inc`). Configure the root in this workflow's
+configuration sheet.</string>
+	<key>uidata</key>
+	<dict>
+		<key>6F1B2A3C-8D4E-4F5A-9B6C-7D8E9F0A1B2C</key>
+		<dict>
+			<key>xpos</key>
+			<integer>40</integer>
+			<key>ypos</key>
+			<integer>130</integer>
+		</dict>
+		<key>A1B2C3D4-E5F6-4A7B-8C9D-0E1F2A3B4C5D</key>
+		<dict>
+			<key>xpos</key>
+			<integer>340</integer>
+			<key>ypos</key>
+			<integer>40</integer>
+		</dict>
+		<key>B2C3D4E5-F6A7-4B8C-9D0E-1F2A3B4C5D6E</key>
+		<dict>
+			<key>xpos</key>
+			<integer>340</integer>
+			<key>ypos</key>
+			<integer>130</integer>
+		</dict>
+		<key>C3D4E5F6-A7B8-4C9D-0E1F-2A3B4C5D6E7F</key>
+		<dict>
+			<key>xpos</key>
+			<integer>340</integer>
+			<key>ypos</key>
+			<integer>220</integer>
+		</dict>
+	</dict>
+	<key>userconfigurationconfig</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string>~/Code</string>
+				<key>filtermode</key>
+				<integer>1</integer>
+				<key>placeholder</key>
+				<string>~/Code</string>
+				<key>required</key>
+				<false/>
+			</dict>
+			<key>description</key>
+			<string>Top-level folder whose depth-2 subfolders (org/project) are your projects.</string>
+			<key>label</key>
+			<string>Projects Root</string>
+			<key>type</key>
+			<string>filepicker</string>
+			<key>variable</key>
+			<string>PROJECTS_ROOT</string>
+		</dict>
+	</array>
+	<key>variablesdontexport</key>
+	<array/>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string>https://github.com/csells/alfred-vsc-switcher</string>
+</dict>
+</plist>
