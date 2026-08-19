@@ -246,6 +246,6 @@ configuration sheet.</string>
 	<key>version</key>
 	<string>1.0.0</string>
 	<key>webaddress</key>
-	<string>https://github.com/csells/alfred-vsc-switcher</string>
+	<string>https://github.com/csells/alfred-vsc-proj-switcher</string>
 </dict>
 </plist>

@@ -1,20 +1,30 @@
-# alfred-vsc-switcher
+# alfred-vsc-proj-switcher
 
-An Alfred workflow for switching among VS Code projects: type `proj` plus a few
-characters of a project name, press ⏎, and you're in that project's window —
-**focused if it's already open, launched if it isn't**.
+An [Alfred](https://www.alfredapp.com/) workflow for switching among VS Code
+projects: type `proj` plus a few characters of a project name, press ⏎, and
+you're in that project's window — **focused if it's already open, launched if
+it isn't**.
 
-The trick is that no window enumeration is needed: `code <folder>` already
-refuses to open a folder that's open in another window and focuses that window
-instead (by design — see `research.md` for the verified deep-dive). So the
-workflow just lists the depth-2 leaf folders under a projects root
-(`~/Code/<org>/<project>` by default) and hands the selected path to the
-`code` CLI.
+## Why it works
+
+No window enumeration is needed. VS Code's own CLI refuses to open a folder
+that's already open in another window and focuses that window instead — a
+documented, by-design behavior ([microsoft/vscode#35207](https://github.com/microsoft/vscode/issues/35207)).
+So the workflow simply lists the depth-2 leaf folders under a projects root
+(`~/Code/<org>/<project>` by default) and hands the selected path to `code`.
+That makes it strictly more capable than a running-windows switcher: it reaches
+every project, running or not, with no AppleScript, no native binaries, and no
+Screen Recording or Accessibility permissions.
+
+`research.md` has the verified deep-dive behind this design: the prior-art
+survey (no existing Alfred workflow lists running VS Code windows), the
+focus-reuse behavior, Script Filter mechanics, and the Electron/AppleScript
+dead ends to avoid.
 
 ## Usage
 
-- `proj <query>` — fuzzy-filter your projects (matches project and org names;
-  Alfred's frecency learns your favorites)
+- `proj <query>` — fuzzy-filter your projects; matches project and org names,
+  and Alfred's frecency learns your favorites
 - ⇥ — autocomplete the selected project name
 - ⏎ — open or focus the project in VS Code
 - ⌘⏎ — force a new window
@@ -37,15 +47,13 @@ default `~/Code`).
   `.alfredworkflow` in `dist/` is just a zip of this directory
 - `specs/vision/` — what this is and why it's built this way
 - `specs/plans/` — the implementation plan
-- `research.md` — deep-research findings the design rests on (prior art,
-  the `code <folder>` focus-reuse behavior, Script Filter mechanics,
-  Electron/AppleScript pitfalls)
+- `research.md` — the research findings the design rests on
 
-## Notes
+## Roadmap
 
-- The workflow icon is currently VS Code's own app icon — fine for personal
-  use, but it needs an original icon before any Alfred Gallery submission.
-- Verified on this machine: `code --status` lists all open windows without any
-  permissions, which is the planned path for a future "● running" indicator.
-  System Events/AppleScript, by contrast, sees no VS Code windows at all
-  without force-enabling `AXManualAccessibility` — avoid that road.
+- "● running" indicator per project: `code --status` lists every open window
+  with no permissions required (verified), so this needs only title parsing —
+  no CGWindowList binary
+- Recents from VS Code's `state.vscdb` for workspaces outside the projects root
+- Alfred Gallery submission (needs an original icon first — the current one is
+  VS Code's own, fine for personal use only)
