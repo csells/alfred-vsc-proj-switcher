@@ -58,7 +58,7 @@
 				<key>alfredfiltersresults</key>
 				<true/>
 				<key>alfredfiltersresultsmatchmode</key>
-				<integer>1</integer>
+				<integer>2</integer>
 				<key>argumenttreatemptyqueryasnil</key>
 				<true/>
 				<key>argumenttrimmode</key>
@@ -183,9 +183,10 @@ focused instead (VS Code never opens the same folder twice).
 - ⌥⏎ — reveal the folder in Finder
 - ⇥ — autocomplete the selected project name
 
-Projects are the depth-2 folders under the Projects Root (org/project, e.g.
-`~/Code/gascity/gas-city-inc`). Configure the root in this workflow's
-configuration sheet.</string>
+Projects are found by walking the Projects Root: any folder with a `.git` is
+a project, other folders are groupings to look inside, and plain org/project
+folders (e.g. `~/Code/gascity/gas-city-inc`) count too. Configure the root in
+this workflow's configuration sheet.</string>
 	<key>uidata</key>
 	<dict>
 		<key>6F1B2A3C-8D4E-4F5A-9B6C-7D8E9F0A1B2C</key>
@@ -232,7 +233,7 @@ configuration sheet.</string>
 				<false/>
 			</dict>
 			<key>description</key>
-			<string>Top-level folder whose depth-2 subfolders (org/project) are your projects.</string>
+			<string>Top-level folder to search for projects: git repos at any depth, plus plain org/project subfolders.</string>
 			<key>label</key>
 			<string>Projects Root</string>
 			<key>type</key>

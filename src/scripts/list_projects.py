@@ -120,43 +120,85 @@ def load_running():
     return names, True
 
 
+MAX_DEPTH = 4
+SKIP_DIR_NAMES = {"node_modules"}
+
+
+def match_text(rel_path):
+    """Alfred matches the query against this instead of the title.
+
+    Include each separator-delimited word of every path component as a
+    standalone token so word-boundary matching hits mid-name words: "trading"
+    finds "auto-trading" without remembering the prefix.
+    """
+    parts = [rel_path.rsplit("/", 1)[-1], rel_path]
+    parts += re.split(r"[-_./\s]+", rel_path)
+    return " ".join(dict.fromkeys(p for p in parts if p))
+
+
+def scan_projects(root):
+    """Yield (rel_path, abs_path, leaf_name) for every project under root.
+
+    A directory with a .git (dir or worktree file) is a project and is not
+    descended into; anything else is a container to recurse. Plain depth-2
+    folders with no nested repos still count as projects, so non-git projects
+    (org/project layout) keep appearing. Hidden dirs are skipped everywhere,
+    which also excludes .claude worktree/skill repos.
+    """
+
+    def walk(path, rel, depth):
+        try:
+            children = sorted(
+                (
+                    e
+                    for e in os.scandir(path)
+                    if e.is_dir()
+                    and not e.name.startswith(".")
+                    and e.name not in SKIP_DIR_NAMES
+                ),
+                key=lambda e: e.name.lower(),
+            )
+        except (FileNotFoundError, NotADirectoryError, PermissionError):
+            return []
+        found = []
+        for child in children:
+            child_rel = f"{rel}/{child.name}" if rel else child.name
+            if os.path.exists(os.path.join(child.path, ".git")):
+                found.append((child_rel, child.path, child.name))
+            elif depth + 1 < MAX_DEPTH:
+                nested = walk(child.path, child_rel, depth + 1)
+                if nested:
+                    found.extend(nested)
+                elif depth + 1 == 2:
+                    found.append((child_rel, child.path, child.name))
+        return found
+
+    return walk(root, "", 0)
+
+
 def main():
     root = os.path.expanduser(
         os.environ.get("PROJECTS_ROOT", "").strip() or "~/Code"
     )
     running, need_rerun = load_running()
     items = []
-    try:
-        orgs = sorted(
-            (e for e in os.scandir(root) if e.is_dir() and not e.name.startswith(".")),
-            key=lambda e: e.name.lower(),
+    for rel, path, leaf in scan_projects(root):
+        is_running = leaf.casefold() in running
+        items.append(
+            {
+                "uid": path,
+                "title": leaf + (" •" if is_running else ""),
+                "subtitle": rel,
+                "arg": path,
+                "autocomplete": leaf,
+                "match": match_text(rel),
+                "icon": {"type": "fileicon", "path": path},
+                "mods": {
+                    "cmd": {"subtitle": "Force new window"},
+                    "alt": {"subtitle": "Reveal in Finder"},
+                },
+            }
         )
-    except (FileNotFoundError, NotADirectoryError, PermissionError):
-        orgs = []
-    for org in orgs:
-        try:
-            children = list(os.scandir(org.path))
-        except PermissionError:
-            continue
-        for child in children:
-            if not child.is_dir() or child.name.startswith("."):
-                continue
-            is_running = child.name.casefold() in running
-            items.append(
-                {
-                    "uid": child.path,
-                    "title": child.name + (" •" if is_running else ""),
-                    "subtitle": f"{org.name}/{child.name}",
-                    "arg": child.path,
-                    "autocomplete": child.name,
-                    "match": f"{child.name} {org.name} {org.name}/{child.name}",
-                    "icon": {"type": "fileicon", "path": child.path},
-                    "mods": {
-                        "cmd": {"subtitle": "Force new window"},
-                        "alt": {"subtitle": "Reveal in Finder"},
-                    },
-                }
-            )
     items.sort(key=lambda i: i["title"].lower())
     if not items:
         items = [

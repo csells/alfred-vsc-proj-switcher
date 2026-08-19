@@ -5,9 +5,12 @@ Gemini CLI). `CLAUDE.md` and `GEMINI.md` are import shims pointing here.
 
 ## What this is
 
-An Alfred workflow (`proj` keyword) that lists depth-2 leaf folders under
-`PROJECTS_ROOT` (default `~/Code`, structure `<org>/<project>`) and opens the
-selection in VS Code. There is intentionally **no window enumeration**: the
+An Alfred workflow (`proj` keyword) that lists the projects under
+`PROJECTS_ROOT` (default `~/Code`) and opens the selection in VS Code. A
+directory containing `.git` is a project (never descended into); other
+directories are containers to recurse (hidden dirs and `node_modules`
+skipped, depth-capped); plain depth-2 dirs (`<org>/<project>`) with no nested
+repos also count as projects. There is intentionally **no window enumeration**: the
 entire switch-or-launch mechanism is that `code <folder>` focuses the existing
 window when the folder is already open and launches it otherwise. Read
 `research.md` before revisiting that decision — it contains adversarially
@@ -56,7 +59,9 @@ osascript -e 'tell application id "com.runningwithcrayons.Alfred" to reload work
   filters results" is ON in the plist, so Alfred does the per-keystroke
   matching (against each item's `match` field), frecency ordering (via `uid`),
   and ⇥ completion (via `autocomplete`). The script must never filter by query
-  itself; adding query handling would fight Alfred's own matcher.
+  itself; adding query handling would fight Alfred's own matcher. The `match`
+  field tokenizes names on `-_.` separators ("auto-trading auto trading …") so
+  mid-name words match at word boundaries regardless of Alfred's match mode.
 - The • running indicator must never block the filter: `code --status` takes
   ~1.5s, so the running set lives in a cache (`$alfred_workflow_cache`,
   `$TMPDIR/com.sellsbrothers.proj` outside Alfred; 10s TTL). When stale, the
@@ -86,6 +91,12 @@ exercises the new code — never leave them running a stale artifact.
 
 ## Gotchas
 
+- `alfredfiltersresultsmatchmode` must stay **2**. Determined empirically
+  (2026-08-18, screenshot-verified): mode 1 behaves as prefix-of-the-entire-
+  match-string — "gas" matched but "trading" never could — while mode 2
+  matches at word boundaries of the match field ("trad" finds the "trading"
+  token; mid-word fragments like "rading" don't match). The value isn't in
+  Alfred's docs; don't guess it, test it via screenshot if it ever changes.
 - Scripts under `src/scripts/` must stay executable (`chmod +x`) — the Script
   Filter invokes `list_projects.py` as an external script via its shebang.
 - `plutil -lint src/info.plist` after any plist edit (build.sh does this).

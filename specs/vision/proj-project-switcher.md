@@ -33,9 +33,11 @@ they're running.
 ## User experience
 
 - **Invoke**: `proj` in Alfred, then a few characters of the project name.
-- **See**: every leaf project folder (depth-2 directory) under the projects root —
-  `~/Code/<org>/<project>`, 102 of them today — title = project name, subtitle =
-  `org/project` so same-named projects in different orgs are distinguishable.
+- **See**: every project under the projects root, however deeply grouped — a
+  folder with a `.git` is a project, other folders are containers to recurse,
+  and plain `<org>/<project>` folders count too (109 today, including nested
+  ones like `Cache/donbox/gascity-tools`) — title = project name, subtitle =
+  the path under the root so same-named projects stay distinguishable.
 - **Narrow**: Alfred's own fuzzy matching filters as you type; ⇥ autocompletes the
   selected project's name (`proj gas-⇥` → `proj gas-city-inc`). Matching also hits
   the org name, so `proj gascity` narrows to that org's projects.
