@@ -68,15 +68,18 @@ osascript -e 'tell application id "com.runningwithcrayons.Alfred" to reload work
   filter spawns a detached `list_projects.py --refresh-running` child (guarded
   by a lockfile) and sets Alfred's `rerun` key until the refresh lands. The
   refresh always rewrites the cache — even empty on failure — because its
-  fresh mtime is what stops the rerun loop. VS Code's is-running guard is
-  `pgrep -fq "MacOS/Code"`: `pgrep -x Code` matches nothing, and `-f` patterns
-  containing spaces (e.g. "Visual Studio Code.app") silently fail. Titles map
-  to projects by the root name after the last " — " (em dash); a customized
+  fresh mtime is what stops the rerun loop. The is-running guard (keeps
+  `--status` from launching the editor) derives the app bundle from the
+  resolved CLI's realpath and prefix-matches `ps -axo comm=` output — NOT
+  pgrep, because `pgrep -x Code` matches nothing and `pgrep -f` patterns
+  containing spaces ("Visual Studio Code.app") silently fail. Titles map to
+  projects by the root name after the last " — " (em dash); a customized
   `window.title` just hides the indicator.
-- `src/scripts/open_project.sh` — resolves the `code` CLI through a fallback
-  chain (`command -v code` → `/usr/local/bin/code` → app-bundle bin) because
-  Alfred runs scripts with a minimal PATH where `command -v code` alone fails.
-  Don't "simplify" this away.
+- CLI resolution (identical order in both scripts — keep them in sync): the
+  `CODE_CLI` workflow config wins, then PATH (`code`, `code-insiders`,
+  `codium`), then `/usr/local/bin`, Homebrew, and app-bundle paths for
+  stable/Insiders/VSCodium. The chain exists because Alfred runs scripts with
+  a minimal PATH where `command -v code` alone fails. Don't "simplify" it.
 - `build.sh` — a `.alfredworkflow` is just a zip of `src/` with `info.plist`
   at the zip root. `dist/` is a gitignored artifact.
 
@@ -100,8 +103,9 @@ exercises the new code — never leave them running a stale artifact.
 - Scripts under `src/scripts/` must stay executable (`chmod +x`) — the Script
   Filter invokes `list_projects.py` as an external script via its shebang.
 - `plutil -lint src/info.plist` after any plist edit (build.sh does this).
-- `src/icon.png` is VS Code's own app icon: acceptable for personal use, must
-  be replaced with an original before any Alfred Gallery submission.
+- `src/icon.png` is an original generated icon (bowler hat over angle
+  brackets) — safe for public distribution, unlike the VS Code app icon it
+  replaced.
 - The GitHub repo is `csells/alfred-vsc-proj-switcher`; the local folder is
   named `alfred-vsc-switcher`. The workflow bundle id is
   `com.sellsbrothers.proj`.

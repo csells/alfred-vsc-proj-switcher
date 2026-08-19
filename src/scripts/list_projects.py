@@ -21,9 +21,19 @@ import time
 
 CACHE_TTL_SECONDS = 10
 LOCK_STALE_SECONDS = 20
+HOME = os.path.expanduser("~")
 CODE_CLI_FALLBACKS = (
     "/usr/local/bin/code",
+    "/opt/homebrew/bin/code",
+    "/usr/local/bin/code-insiders",
+    "/opt/homebrew/bin/code-insiders",
+    "/usr/local/bin/codium",
+    "/opt/homebrew/bin/codium",
     "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code",
+    HOME + "/Applications/Visual Studio Code.app/Contents/Resources/app/bin/code",
+    "/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin/code-insiders",
+    "/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin/code",
+    "/Applications/VSCodium.app/Contents/Resources/app/bin/codium",
 )
 
 
@@ -36,15 +46,41 @@ def cache_dir():
 
 
 def code_cli():
+    """Same resolution order as open_project.sh: CODE_CLI config, PATH, then
+    common locations for stable, Insiders, and VSCodium."""
     from shutil import which
 
-    cli = which("code")
-    if cli:
-        return cli
+    configured = os.path.expanduser(os.environ.get("CODE_CLI", "").strip())
+    if configured and os.access(configured, os.X_OK):
+        return configured
+    for name in ("code", "code-insiders", "codium"):
+        cli = which(name)
+        if cli:
+            return cli
     for path in CODE_CLI_FALLBACKS:
         if os.access(path, os.X_OK):
             return path
     return None
+
+
+def app_is_running(cli):
+    """True when the app bundle that owns this CLI has a running process.
+
+    Guards `code --status` from launching the editor when it isn't running.
+    Uses `ps` prefix checks rather than pgrep: pgrep -f patterns containing
+    spaces ("Visual Studio Code.app/...") silently match nothing.
+    """
+    try:
+        out = subprocess.run(
+            ["/bin/ps", "-axo", "comm="], capture_output=True, text=True, timeout=5
+        ).stdout
+    except Exception:
+        return False
+    real = os.path.realpath(cli)
+    if ".app/" in real:
+        prefix = real.split(".app/", 1)[0] + ".app/Contents/MacOS/"
+        return any(line.startswith(prefix) for line in out.splitlines())
+    return any("/Contents/MacOS/Code" in line for line in out.splitlines())
 
 
 def parse_window_roots(status_text):
@@ -68,11 +104,8 @@ def refresh_running():
     d = cache_dir()
     names = []
     try:
-        vscode_running = (
-            subprocess.run(["/usr/bin/pgrep", "-fq", "MacOS/Code"]).returncode == 0
-        )
         cli = code_cli()
-        if vscode_running and cli:
+        if cli and app_is_running(cli):
             out = subprocess.run(
                 [cli, "--status"], capture_output=True, text=True, timeout=15
             ).stdout

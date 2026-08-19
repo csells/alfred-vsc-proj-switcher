@@ -241,11 +241,32 @@ this workflow's configuration sheet.</string>
 			<key>variable</key>
 			<string>PROJECTS_ROOT</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<string></string>
+				<key>placeholder</key>
+				<string>auto-detect</string>
+				<key>required</key>
+				<false/>
+				<key>trim</key>
+				<true/>
+			</dict>
+			<key>description</key>
+			<string>Path to the VS Code CLI. Leave empty to auto-detect (code, code-insiders, codium — PATH, /usr/local/bin, Homebrew, and app bundles).</string>
+			<key>label</key>
+			<string>VS Code CLI</string>
+			<key>type</key>
+			<string>textfield</string>
+			<key>variable</key>
+			<string>CODE_CLI</string>
+		</dict>
 	</array>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>1.0.0</string>
+	<string>1.1.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/csells/alfred-vsc-proj-switcher</string>
 </dict>

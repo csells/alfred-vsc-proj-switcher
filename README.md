@@ -5,6 +5,8 @@ projects: type `proj` plus a few characters of a project name, press ⏎, and
 you're in that project's window — **focused if it's already open, launched if
 it isn't**.
 
+![proj in Alfred: query, fuzzy match, and the • running indicator](docs/images/proj-search.png)
+
 ## Why it works
 
 No window enumeration is needed. VS Code's own CLI refuses to open a folder
@@ -37,14 +39,29 @@ dead ends to avoid.
 
 ## Install
 
+Download the `.alfredworkflow` from the
+[latest release](https://github.com/csells/alfred-vsc-proj-switcher/releases/latest)
+and double-click it, or build from source:
+
 ```sh
 ./build.sh
 open dist/proj.alfredworkflow   # Alfred prompts to import
 ```
 
-Requires Alfred with the Powerpack, VS Code, and `python3`. The projects root
-is configurable in the workflow's configuration sheet (`PROJECTS_ROOT`,
-default `~/Code`).
+### Requirements
+
+- Alfred with the [Powerpack](https://www.alfredapp.com/powerpack/)
+- VS Code (stable, Insiders, or VSCodium — the CLI is auto-detected across
+  PATH, `/usr/local/bin`, Homebrew, and app bundles; set the workflow's
+  "VS Code CLI" configuration field to pin a specific one)
+- `python3` — macOS's bundled build is fine; on a fresh Mac the first run may
+  prompt to install the Xcode Command Line Tools
+
+### Configuration
+
+In the workflow's Configure sheet: **Projects Root** (default `~/Code`) is
+the folder to scan, and **VS Code CLI** (default auto-detect) pins the editor
+when several are installed.
 
 ## Layout
 
@@ -65,5 +82,4 @@ breaks nothing else.
 ## Roadmap
 
 - Recents from VS Code's `state.vscdb` for workspaces outside the projects root
-- Alfred Gallery submission (needs an original icon first — the current one is
-  VS Code's own, fine for personal use only)
+- Alfred Gallery listing (submission drafted in `docs/gallery-submission.md`)
