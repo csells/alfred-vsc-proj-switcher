@@ -1,41 +1,59 @@
-# Alfred Gallery submission draft
+# Alfred Gallery — actual submission process (corrected 2026-08-19)
 
-Post this in the Alfred Forum's Gallery submission section
-(https://www.alfredforum.com/forum/62-submit-your-workflows-to-the-alfred-gallery/)
-from your account. Prerequisites are all in place: public GitHub repo with
-README and screenshot, original icon, tagged release with the
-`.alfredworkflow` attached, and the `alfred-workflow` repo topic.
+The Gallery is **invitation-based** — there is no direct submission form. Per
+[alfred.app/submit](https://alfred.app/submit/):
+
+1. **Share the workflow on the forum first**, in the
+   [Share your Workflows](https://www.alfredforum.com/forum/3-share-your-workflows/)
+   section. (The `forum/62-…` URL in an earlier draft of this file never
+   existed.)
+2. Once the workflow is "generally stable and trusted by a number of users,"
+   the Alfred team **may invite** an official Gallery submission.
+
+## Gallery requirements checklist (all met)
+
+- Icon at least 256×256 px — ✓ 512×512 original
+- Keyword three characters or more — ✓ `proj`
+- User configuration offered — ✓ Projects Root, VS Code CLI
+- No unsigned binaries, no auto-updaters, never downloads/runs external
+  software, no `pip/gem/brew install` or curl'd binaries — ✓ two plain-text
+  scripts, fully auditable on GitHub
+- README follows the [Gallery style guide](https://alfred.app/submit/styleguide/)
+  — ✓ the workflow's embedded readme uses the `## Usage` + `<kbd>` modifier
+  format
+
+## Forum post draft (Share your Workflows)
 
 ---
 
-**Title:** VS Code Project Switcher — open-or-focus your projects from a keyword
+**Title:** VS Code Project Switcher — open-or-focus your projects via a keyword
 
 **Body:**
 
-`proj` + a few characters + ⏎ puts you in the right VS Code window: focused
-if that project is already open, launched if it isn't.
+Search for your VS Code projects via the `proj` keyword and press
+<kbd>↩</kbd> — the project's window is focused if it's already open (shown
+with a • indicator) and launched if it isn't.
 
-Repo: https://github.com/csells/alfred-vsc-proj-switcher
-Latest release: https://github.com/csells/alfred-vsc-proj-switcher/releases/latest
+[screenshot: docs/images/proj-search.png]
 
-What it does differently from the existing VS Code workflows (which list
-recent/saved workspaces): it scans your actual projects folder — git repos at
-any depth plus plain `org/project` folders — and shows a live • indicator on
-projects that already have an open window, with no Accessibility or Screen
-Recording permissions. The open-or-focus behavior is VS Code's own
-documented CLI semantics (`code <folder>` refuses to open the same folder
-twice and focuses the existing window), so there's no AppleScript and no
-window scraping.
+Unlike the existing VS Code workflows that list recent or saved workspaces,
+this one scans your actual projects folder — git repos at any depth plus
+plain `org/project` folders — and marks the ones with an open window live,
+using no Accessibility or Screen Recording permissions. The open-or-focus
+behavior is VS Code's own CLI semantics (`code <folder>` focuses the existing
+window rather than opening a duplicate), so there's no AppleScript or window
+scraping. Matching is word-level: "trading" finds `auto-trading`.
 
-Features:
+- <kbd>↩</kbd> Open or focus the project
+- <kbd>⌘</kbd><kbd>↩</kbd> Force a new window
+- <kbd>⌥</kbd><kbd>↩</kbd> Reveal the folder in Finder
+- <kbd>⇥</kbd> Autocomplete the project name
 
-- Word-level matching: "trading" finds `auto-trading`; every path component
-  is matched, so a grouping folder name narrows too
-- ⇥ autocompletes the project name; Alfred's frecency learns your favorites
-- • running indicator via `code --status`, cached off the critical path so
-  the list is always instant
-- ⌘⏎ forces a new window; ⌥⏎ reveals in Finder
-- Configurable projects root; VS Code stable, Insiders, and VSCodium
-  supported with CLI auto-detection (or pin one in the workflow config)
+Projects Root and the VS Code CLI (stable, Insiders, or VSCodium) are set in
+the Workflow's Configuration.
 
-Requirements: Powerpack, VS Code, macOS `python3` (Xcode Command Line Tools).
+Download: https://github.com/csells/alfred-vsc-proj-switcher/releases/latest
+Source: https://github.com/csells/alfred-vsc-proj-switcher
+
+Requires the Powerpack, VS Code, and macOS `python3` (Xcode Command Line
+Tools).

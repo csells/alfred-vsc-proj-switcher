@@ -82,4 +82,6 @@ breaks nothing else.
 ## Roadmap
 
 - Recents from VS Code's `state.vscdb` for workspaces outside the projects root
-- Alfred Gallery listing (submission drafted in `docs/gallery-submission.md`)
+- Alfred Gallery listing — the Gallery is invitation-based: share on the
+  forum, build users, await an invite (process + forum post draft in
+  `docs/gallery-submission.md`)

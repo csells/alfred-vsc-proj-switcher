@@ -172,21 +172,23 @@
 		</dict>
 	</array>
 	<key>readme</key>
-	<string># VS Code Project Switcher
+	<string>## Usage
 
-Type `proj` and a few characters of a project name; press Return to open that
-project in VS Code. If the project is already open, its existing window is
-focused instead (VS Code never opens the same folder twice).
+Search for your VS Code projects via the `proj` keyword. Projects with an
+open window show a • indicator; pressing &lt;kbd&gt;↩&lt;/kbd&gt; focuses that window,
+or launches the project if it isn't open.
 
-- ⏎ — open or focus the project
-- ⌘⏎ — force a new window
-- ⌥⏎ — reveal the folder in Finder
-- ⇥ — autocomplete the selected project name
+* &lt;kbd&gt;↩&lt;/kbd&gt; Open or focus the project.
+* &lt;kbd&gt;⌘&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Force a new window.
+* &lt;kbd&gt;⌥&lt;/kbd&gt;&lt;kbd&gt;↩&lt;/kbd&gt; Reveal the folder in Finder.
+* &lt;kbd&gt;⇥&lt;/kbd&gt; Autocomplete the project name.
 
-Projects are found by walking the Projects Root: any folder with a `.git` is
-a project, other folders are groupings to look inside, and plain org/project
-folders (e.g. `~/Code/gascity/gas-city-inc`) count too. Configure the root in
-this workflow's configuration sheet.</string>
+Projects are found by walking the Projects Root set in the Workflow's
+Configuration: any folder containing a `.git` is a project, other folders are
+groupings to look inside, and plain org/project folders count too. Matching
+is word-level — "trading" finds `auto-trading`. The VS Code CLI (stable,
+Insiders, or VSCodium) is auto-detected, or pin one in the Workflow's
+Configuration.</string>
 	<key>uidata</key>
 	<dict>
 		<key>6F1B2A3C-8D4E-4F5A-9B6C-7D8E9F0A1B2C</key>
