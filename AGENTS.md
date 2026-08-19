@@ -13,9 +13,8 @@ window when the folder is already open and launches it otherwise. Read
 `research.md` before revisiting that decision — it contains adversarially
 verified findings (e.g. System Events/AppleScript sees zero VS Code windows
 without force-enabling `AXManualAccessibility`; `code --status` enumerates all
-windows with no permissions and is the designated path for the roadmap
-"running" indicator). `specs/vision/` and `specs/plans/` explain the design and
-its non-goals.
+windows with no permissions and powers the • running indicator). `specs/vision/`
+and `specs/plans/` explain the design and its non-goals.
 
 ## Commands
 
@@ -58,6 +57,17 @@ osascript -e 'tell application id "com.runningwithcrayons.Alfred" to reload work
   matching (against each item's `match` field), frecency ordering (via `uid`),
   and ⇥ completion (via `autocomplete`). The script must never filter by query
   itself; adding query handling would fight Alfred's own matcher.
+- The • running indicator must never block the filter: `code --status` takes
+  ~1.5s, so the running set lives in a cache (`$alfred_workflow_cache`,
+  `$TMPDIR/com.sellsbrothers.proj` outside Alfred; 10s TTL). When stale, the
+  filter spawns a detached `list_projects.py --refresh-running` child (guarded
+  by a lockfile) and sets Alfred's `rerun` key until the refresh lands. The
+  refresh always rewrites the cache — even empty on failure — because its
+  fresh mtime is what stops the rerun loop. VS Code's is-running guard is
+  `pgrep -fq "MacOS/Code"`: `pgrep -x Code` matches nothing, and `-f` patterns
+  containing spaces (e.g. "Visual Studio Code.app") silently fail. Titles map
+  to projects by the root name after the last " — " (em dash); a customized
+  `window.title` just hides the indicator.
 - `src/scripts/open_project.sh` — resolves the `code` CLI through a fallback
   chain (`command -v code` → `/usr/local/bin/code` → app-bundle bin) because
   Alfred runs scripts with a minimal PATH where `command -v code` alone fails.

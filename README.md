@@ -24,7 +24,8 @@ dead ends to avoid.
 ## Usage
 
 - `proj <query>` — fuzzy-filter your projects; matches project and org names,
-  and Alfred's frecency learns your favorites
+  and Alfred's frecency learns your favorites. Projects with an open VS Code
+  window show a • indicator
 - ⇥ — autocomplete the selected project name
 - ⏎ — open or focus the project in VS Code
 - ⌘⏎ — force a new window
@@ -49,11 +50,16 @@ default `~/Code`).
 - `specs/plans/` — the implementation plan
 - `research.md` — the research findings the design rests on
 
+The • running indicator comes from `code --status`, which lists every open
+window with no permissions required. Because `--status` takes ~1.5s, the
+running set is cached and refreshed in the background; Alfred's `rerun`
+mechanism updates the indicators in place a moment after you invoke `proj`.
+Customizing VS Code's `window.title` setting hides the indicator (title
+parsing depends on the default title ending in the workspace root name) but
+breaks nothing else.
+
 ## Roadmap
 
-- "● running" indicator per project: `code --status` lists every open window
-  with no permissions required (verified), so this needs only title parsing —
-  no CGWindowList binary
 - Recents from VS Code's `state.vscdb` for workspaces outside the projects root
 - Alfred Gallery submission (needs an original icon first — the current one is
   VS Code's own, fine for personal use only)

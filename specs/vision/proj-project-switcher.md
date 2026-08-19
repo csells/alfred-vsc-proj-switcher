@@ -45,16 +45,19 @@ they're running.
   the top, so frequent projects become `proj` + ⏎.
 - **Modifiers**: ⌘⏎ forces a new window (`code -n`) for the deliberate
   second-window case; ⌥⏎ reveals the folder in Finder.
+- **Sees what's running**: projects with an open VS Code window carry a •
+  indicator (from `code --status`, cached so the list stays instant).
 
 ## Principles
 
 1. **Folders are the backbone, windows are decoration.** Running-window awareness
-   (e.g. a "● running" annotation) is an optional later layer, never a dependency.
+   (e.g. a "• running" annotation) is an optional later layer, never a dependency.
 2. **No permissions, no daemons, no native binaries.** A Script Filter and the
    `code` CLI. If a feature demands Screen Recording or accessibility permissions,
    it belongs in a future enhancement, not the core.
 3. **Instant.** One directory scan of ~100 folders per invocation; Alfred filters
-   keystrokes itself. No caches to go stale, no background refresh to maintain.
+   keystrokes itself. The project list is never cached; only the cosmetic
+   running indicator uses a short-lived cache, refreshed off the critical path.
 4. **Configurable, not hardcoded.** Projects root (default `~/Code`) is an Alfred
    workflow user-configuration field; the `code` CLI path is resolved dynamically
    (the hardcoded `/usr/local/bin/code` in prior-art workflows breaks on default
@@ -70,9 +73,6 @@ they're running.
 
 ## Later, maybe
 
-- **Running indicator**: annotate projects that already have a window ("●"), via a
-  `code --status` parse experiment first (no permissions) and CGWindowList only as
-  a fallback (see research.md open questions).
 - **Recents augmentation**: merge in `state.vscdb`'s `history.recentlyOpenedPathsList`
   for workspaces living outside the projects root.
 - **Alfred Gallery publication**: no Gallery workflow does live-aware project
