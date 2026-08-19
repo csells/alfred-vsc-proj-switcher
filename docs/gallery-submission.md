@@ -1,5 +1,10 @@
 # Alfred Gallery — actual submission process (corrected 2026-08-19)
 
+**Status: shared on the forum 2026-08-19** —
+https://www.alfredforum.com/topic/23937-vs-code-project-switcher-open-or-focus-your-projects-via-a-keyword/
+Next: accumulate users/feedback there; the Alfred team invites Gallery
+submission once a workflow is "generally stable and trusted."
+
 The Gallery is **invitation-based** — there is no direct submission form. Per
 [alfred.app/submit](https://alfred.app/submit/):
 

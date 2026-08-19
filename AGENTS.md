@@ -75,6 +75,13 @@ osascript -e 'tell application id "com.runningwithcrayons.Alfred" to reload work
   containing spaces ("Visual Studio Code.app") silently fail. Titles map to
   projects by the root name after the last " — " (em dash); a customized
   `window.title` just hides the indicator.
+- Recents (INCLUDE_RECENTS config, default on) come from storage.json's
+  `lastKnownMenubarData` File → Open Recent snapshot in the variant's
+  Application Support dir — NOT from state.vscdb: modern VS Code no longer
+  writes the `history.recentlyOpenedPathsList` key that older workflows
+  (and research.md's prior-art survey) query; that key does not exist in
+  this machine's DB (verified 2026-08-19). Entries are existence-checked,
+  deduplicated against scanned projects, and capped at MAX_RECENTS.
 - CLI resolution (identical order in both scripts — keep them in sync): the
   `CODE_CLI` workflow config wins, then PATH (`code`, `code-insiders`,
   `codium`), then `/usr/local/bin`, Homebrew, and app-bundle paths for

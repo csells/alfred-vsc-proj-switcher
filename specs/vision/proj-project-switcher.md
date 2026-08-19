@@ -49,6 +49,9 @@ they're running.
   second-window case; ⌥⏎ reveals the folder in Finder.
 - **Sees what's running**: projects with an open VS Code window carry a •
   indicator (from `code --status`, cached so the list stays instant).
+- **Remembers what's elsewhere**: VS Code's Open Recent folders and
+  workspaces outside the projects root are merged in (configurable,
+  deduplicated), so one-off projects opened from anywhere stay reachable.
 
 ## Principles
 
@@ -75,8 +78,6 @@ they're running.
 
 ## Later, maybe
 
-- **Recents augmentation**: merge in `state.vscdb`'s `history.recentlyOpenedPathsList`
-  for workspaces living outside the projects root.
 - **Alfred Gallery publication**: no Gallery workflow does live-aware project
   switching today; a polished version is a genuinely novel contribution
   (host on GitHub → submit via the Alfred Forum's Gallery process).

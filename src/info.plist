@@ -264,11 +264,30 @@ Configuration.</string>
 			<key>variable</key>
 			<string>CODE_CLI</string>
 		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>default</key>
+				<true/>
+				<key>required</key>
+				<false/>
+				<key>text</key>
+				<string>Include VS Code's recent folders and workspaces</string>
+			</dict>
+			<key>description</key>
+			<string>Adds entries from VS Code's Open Recent list that live outside the Projects Root (deduplicated against the scanned projects).</string>
+			<key>label</key>
+			<string>Recents</string>
+			<key>type</key>
+			<string>checkbox</string>
+			<key>variable</key>
+			<string>INCLUDE_RECENTS</string>
+		</dict>
 	</array>
 	<key>variablesdontexport</key>
 	<array/>
 	<key>version</key>
-	<string>1.1.0</string>
+	<string>1.2.0</string>
 	<key>webaddress</key>
 	<string>https://github.com/csells/alfred-vsc-proj-switcher</string>
 </dict>

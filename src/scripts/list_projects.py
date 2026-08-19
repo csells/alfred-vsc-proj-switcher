@@ -169,6 +169,77 @@ def match_text(rel_path):
     return " ".join(dict.fromkeys(p for p in parts if p))
 
 
+def app_support_dir(cli):
+    """The variant-specific Application Support dir for the resolved CLI."""
+    real = os.path.realpath(cli) if cli else ""
+    if "Insiders" in real:
+        name = "Code - Insiders"
+    elif "VSCodium" in real or real.endswith("/codium"):
+        name = "VSCodium"
+    else:
+        name = "Code"
+    return os.path.join(HOME, "Library/Application Support", name)
+
+
+MAX_RECENTS = 20
+
+
+def recent_projects():
+    """Yield (display, abs_path, leaf) from VS Code's Open Recent list.
+
+    Modern VS Code no longer stores history.recentlyOpenedPathsList in
+    state.vscdb (the key older workflows query is gone); the surviving
+    on-disk copy of the Open Recent list is the File menu snapshot in
+    storage.json's lastKnownMenubarData.
+    """
+    storage = os.path.join(
+        app_support_dir(code_cli()), "User/globalStorage/storage.json"
+    )
+    try:
+        with open(storage) as f:
+            menus = json.load(f).get("lastKnownMenubarData", {}).get("menus", {})
+    except Exception:
+        return []
+
+    found = []
+
+    def collect(node):
+        if isinstance(node, dict):
+            node_id = str(node.get("id", ""))
+            if node_id in ("openRecentFolder", "openRecentWorkspace"):
+                path = (node.get("uri") or {}).get("path", "")
+                if path:
+                    found.append(path)
+            for value in node.values():
+                collect(value)
+        elif isinstance(node, list):
+            for value in node:
+                collect(value)
+
+    collect(menus.get("File", {}))
+
+    out = []
+    for path in found:
+        path = os.path.normpath(path)
+        if not os.path.exists(path):
+            continue
+        leaf = os.path.basename(path)
+        if leaf.endswith(".code-workspace"):
+            leaf = leaf[: -len(".code-workspace")]
+        display = path.replace(HOME + "/", "~/", 1) if path.startswith(HOME + "/") else path
+        out.append((display, path, leaf))
+        if len(out) >= MAX_RECENTS:
+            break
+    return out
+
+
+def include_recents():
+    return os.environ.get("INCLUDE_RECENTS", "1").strip().lower() not in (
+        "0",
+        "false",
+    )
+
+
 def scan_projects(root):
     """Yield (rel_path, abs_path, leaf_name) for every project under root.
 
@@ -214,24 +285,35 @@ def main():
         os.environ.get("PROJECTS_ROOT", "").strip() or "~/Code"
     )
     running, need_rerun = load_running()
-    items = []
-    for rel, path, leaf in scan_projects(root):
+
+    def item(display, path, leaf):
         is_running = leaf.casefold() in running
-        items.append(
-            {
-                "uid": path,
-                "title": leaf + (" •" if is_running else ""),
-                "subtitle": rel,
-                "arg": path,
-                "autocomplete": leaf,
-                "match": match_text(rel),
-                "icon": {"type": "fileicon", "path": path},
-                "mods": {
-                    "cmd": {"subtitle": "Force new window"},
-                    "alt": {"subtitle": "Reveal in Finder"},
-                },
-            }
-        )
+        return {
+            "uid": path,
+            "title": leaf + (" •" if is_running else ""),
+            "subtitle": display,
+            "arg": path,
+            "autocomplete": leaf,
+            "match": match_text(display.lstrip("~/")),
+            "icon": {"type": "fileicon", "path": path},
+            "mods": {
+                "cmd": {"subtitle": "Force new window"},
+                "alt": {"subtitle": "Reveal in Finder"},
+            },
+        }
+
+    items = []
+    seen = set()
+    for rel, path, leaf in scan_projects(root):
+        seen.add(os.path.normpath(path).casefold())
+        items.append(item(rel, path, leaf))
+    if include_recents():
+        for display, path, leaf in recent_projects():
+            key = os.path.normpath(path).casefold()
+            if key in seen:
+                continue
+            seen.add(key)
+            items.append(item(display, path, leaf))
     items.sort(key=lambda i: i["title"].lower())
     if not items:
         items = [

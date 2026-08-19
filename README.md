@@ -60,8 +60,10 @@ open dist/proj.alfredworkflow   # Alfred prompts to import
 ### Configuration
 
 In the workflow's Configure sheet: **Projects Root** (default `~/Code`) is
-the folder to scan, and **VS Code CLI** (default auto-detect) pins the editor
-when several are installed.
+the folder to scan, **VS Code CLI** (default auto-detect) pins the editor
+when several are installed, and **Recents** (default on) merges VS Code's
+Open Recent folders and workspaces that live outside the projects root,
+deduplicated against the scanned projects.
 
 ## Layout
 
@@ -81,7 +83,6 @@ breaks nothing else.
 
 ## Roadmap
 
-- Recents from VS Code's `state.vscdb` for workspaces outside the projects root
 - Alfred Gallery listing — the Gallery is invitation-based: share on the
   forum, build users, await an invite (process + forum post draft in
   `docs/gallery-submission.md`)
